@@ -62,7 +62,59 @@ app.route("/articles")
   });
 });
 
+//////////////////////////working on a specific article////////////////////////////////////
 
+app.route("/articles/:articleTitle")
+
+.get(function(req, res){
+  Article.findOne({title: req.params.articleTitle}, function(err, foundArticle){
+    if(foundArticle){
+      res.send(foundArticle);
+    }else{
+      res.send("No article matching that title was found.");
+    }  
+  });
+})
+
+.put(function(req, res){
+  Article.update(
+    {title: req.params.articleTitle},
+    {title: req.body.title, content: req.body.content},
+    {overwrite: true},
+    function(err, results){
+      if(!err){
+        res.send("Successfully updated the article!");
+      }
+    }
+  )
+})
+
+.patch(function(req, res){
+  Article.update(
+    {title: req.params.articleTitle},
+    {$set: req.body},
+    function(err){
+      if(!err){
+        res.send("Successfully updated!")
+      }else{
+        res.send(err);
+      }
+    }
+  );
+})
+
+.delete(function(req, res){
+  Article.deleteOne(
+    {title: req.params.articleTitle},
+    function(err){
+      if(!err){
+        res.send("Successfully deleted!")
+      }else{
+        res.send(err);
+      }
+    }
+  );
+});
 
 
 
